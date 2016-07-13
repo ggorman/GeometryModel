@@ -15,16 +15,10 @@ enable_language(CXX)
 
 set (GEOMETRYMODEL_LIBRARIES)
 
-# What's the right way to find opencascade install - fixme
-find_library(LIBOPENCASCADE occ PATHS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-if(LIBOPENCASCADE)
-	message(STATUS "Found LIBOPENCASCADE --- ${LIBOPENCASCADE}")
-
-	set (GEOMETRYMODEL_LIBRARIES ${LIBOPENCASCADE} ${GEOMETRYMODEL_LIBRARIES})
-	add_definitions(-DOCC_FOUND)
-else()
-  message(SEND_ERROR, "Cannot find opencascade - required.")
-endif()
+find_package(OpenCasCade)
+IF(NOT OCC_FOUND)
+  message(SEND_ERROR, "Cannot find OpenCasCade - required.")
+ENDIF(NOT OCC_FOUND)
 
 FIND_PACKAGE(VTK NO_MODULE)
 if(VTK_FOUND)
