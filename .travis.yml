@@ -8,6 +8,7 @@ before_install:
   - test -n $CXX && unset CXX
 install:
   - sudo apt-get install -y libvtk5-dev libvtk5.8
+  - sudo apt-get install -y libopencascade-dev libopencascade-*-dev
   - sudo apt-get install -qq gcc-4.9 g++-4.9 gfortran-4.9
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
