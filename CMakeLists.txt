@@ -18,6 +18,9 @@ set (GEOMETRYMODEL_LIBRARIES)
 find_package(OpenCasCade)
 IF(NOT OCC_FOUND)
   message(SEND_ERROR, "Cannot find OpenCasCade - required.")
+ELSE()
+  include_directories(${OCC_INCLUDE_DIR})
+  set (GEOMETRYMODEL_LIBRARIES ${OCC_LIBRARIES} ${GEOMETRYMODEL_LIBRARIES})
 ENDIF(NOT OCC_FOUND)
 
 FIND_PACKAGE(VTK NO_MODULE)
@@ -66,4 +69,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
 ADD_EXECUTABLE(test_GeometryModel tests/test_GeometryModel.cpp)
 TARGET_LINK_LIBRARIES(test_GeometryModel ${GEOMETRYMODEL_LIBRARIES} geometrymodel)
 
+ADD_EXECUTABLE(test_CAD_Formats tests/test_CAD_Formats.cpp)
+TARGET_LINK_LIBRARIES(test_CAD_Formats ${GEOMETRYMODEL_LIBRARIES} geometrymodel)
+
 add_test(NAME unit_GeometryModel COMMAND ${PROJECT_BINARY_DIR}/tests/test_GeometryModel)
+add_test(NAME unit_CAD_Format COMMAND ${PROJECT_BINARY_DIR}/tests/test_CAD_Formats)
