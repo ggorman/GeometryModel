@@ -1,50 +1,60 @@
 #include "GeometryModel.h"
 
 #include <cassert>
-#include <iostream>
-#include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
-#include <vtkPolyData.h>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <TDocStd_Document.hxx>
+
+Handle(XCAFDoc_ShapeTool) create_test_shapes(
+        TDF_Label &sphere_label, TDF_Label &box_label) {
+
+    
+    // Create a sphere
+    gp_Pnt center(0, 0, 0);
+    Standard_Real radius = 10;
+
+    TopoDS_Shape sphere =
+        BRepPrimAPI_MakeSphere(
+                center, radius
+                ).Shape();
+
+    // Create a box 
+    gp_Pnt corner(-10, -10, 30);
+    TopoDS_Solid box =
+        BRepPrimAPI_MakeBox(
+                corner, 20, 20, 20
+                ).Solid();
+
+
+    // Create ShapeTool and add the shapes
+    Handle(TDocStd_Document) doc = new TDocStd_Document("");
+    Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
+    sphere_label = shapes->AddShape(sphere);
+    box_label = shapes->AddShape(box);
+
+    return shapes;
+}
 
 int main(int argc, char **argv)
 {
-    // Create sphere geometry.
-    vtkSmartPointer<vtkSphereSource> sphere=vtkSmartPointer<vtkSphereSource>::New();
-    sphere->SetRadius(100.0);
-    sphere->SetCenter(600, 600, 600);
-    sphere->SetPhiResolution(180);
-    sphere->SetThetaResolution(360);
-    sphere->Update();
+    TDF_Label sphere_label;
+    TDF_Label box_label;
+    GeometryModel geo_model(create_test_shapes(sphere_label, box_label));
 
-    vtkSmartPointer<vtkPolyData> pd=vtkSmartPointer<vtkPolyData>::New();
+    TopoDS_Vertex test_1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)).Vertex();
 
-    double resolution = 1.0;
-    GeometryModel geometry(*sphere->GetOutput(), resolution);
+    assert(geo_model.load_second_shape(test_1));
 
-    double dx = 50.0;
-    double normal[3], distance;
-    for(int i=0; i<40; i++) {
-        for(int j=0; j<40; j++) {
-            for(int k=0; k<40; k++) {
-                double v[] = {-1000.0+i*dx, -1000.0+j*dx, -1000.0+k*dx};
-                double r = sqrt((v[0]-600)*(v[0]-600) + (v[1]-600)*(v[1]-600) + (v[2]-600)*(v[2]-600));
+    assert(geo_model.distance_to_boundary() == 10);
+    assert(geo_model.label_on_shape().IsDescendant(sphere_label));
 
-                double distance_to_boundary = geometry.distance_to_boundary(v);
-                double exact_distance_to_boundary = r - 100.0;
-                assert(fabs(distance_to_boundary-exact_distance_to_boundary)<1.0);
+    TopoDS_Vertex test_2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 80)).Vertex();
 
-                if(fabs(distance_to_boundary)<100) {
-                    assert(geometry.is_boundary_within_radius(100.0+resolution, v));
-                    assert(geometry.is_boundary_within_radius(100.0+resolution, v, normal, distance));
-                    assert(fabs(distance-distance_to_boundary)<1.0);
-                } else {
-                    assert(!geometry.is_boundary_within_radius(100.0-resolution, v));
-                    assert(!geometry.is_boundary_within_radius(100.0-resolution, v, normal, distance));
-                }
-            }
-        }
-    }
+    assert(geo_model.load_second_shape(test_2));
 
-    return 0;
+    assert(geo_model.distance_to_boundary() == 30);
+    assert(geo_model.label_on_shape().IsDescendant(box_label));
 }
-

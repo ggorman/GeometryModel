@@ -48,7 +48,13 @@ TopoDS_Edge GeometryModel::normal()
 
 TDF_Label GeometryModel::label_on_shape()
 {
-    return _file_info->FindShape(dist_calculator.SupportOnShape1(1));
+    TopoDS_Shape support = dist_calculator.SupportOnShape1(1);
+
+    TDF_Label label;
+
+    _file_info->Search(support, label, true, true, true);
+
+    return label;
 }
 
 void GeometryModel::load_first_shape()
