@@ -6,16 +6,6 @@ GeometryModel::GeometryModel(Handle(XCAFDoc_ShapeTool) file_info)
   load_first_shape();
 }
 
-GeometryModel::GeometryModel(const char *filename, FileType type)
-{
-    if (type == IGES_FILE) {
-          _file_info = readIGES(filename);
-    } if (type == STEP_FILE) {
-          _file_info = readSTEP(filename);
-    } 
-    load_first_shape();
-}
-
 Standard_Boolean GeometryModel::load_second_shape(const TopoDS_Shape &shape)
 {
     dist_calculator.LoadS2(shape);

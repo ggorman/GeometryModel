@@ -20,7 +20,6 @@ class GeometryModel
 {
 public:
     GeometryModel(Handle(XCAFDoc_ShapeTool) file_info);
-    GeometryModel(const char *filename, FileType type);
 
     Standard_Boolean load_second_shape(const TopoDS_Shape &shape);
     Standard_Boolean is_loaded();
