@@ -1,8 +1,6 @@
 #ifndef GEOMETRYMODEL_H
 #define GEOMETRYMODEL_H
 
-#include "XDEReader.h"
-
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
