@@ -7,6 +7,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <TDocStd_Document.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
 
 Handle(XCAFDoc_ShapeTool) create_test_shapes(
         TDF_Label &sphere_label, TDF_Label &box_label) {

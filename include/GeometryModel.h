@@ -11,6 +11,7 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 enum FileType { IGES_FILE, STEP_FILE };
 
