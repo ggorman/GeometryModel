@@ -9,7 +9,9 @@
 #include <BRep_Tool.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepClass_FaceClassifier.hxx>
+#include <cmath>
 #include <iostream>
+#include <limits>
 #include <gp_Pnt2d.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <Standard_TypeDef.hxx>

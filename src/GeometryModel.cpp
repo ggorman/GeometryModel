@@ -2,8 +2,8 @@
 
 GeometryModel::GeometryModel(Handle(XCAFDoc_ShapeTool) file_info)
 {
-  _file_info = file_info;
-  load_first_shape();
+    _file_info = file_info;
+    load_first_shape();
 }
 
 Standard_Boolean GeometryModel::load_second_shape(const TopoDS_Shape &shape)
@@ -25,29 +25,24 @@ Standard_Real GeometryModel::curvature()
 
     TopoDS_Shape main_shape = _file_info->GetShape(main_shape_label);
     gp_Pnt point = dist_calculator.PointOnShape1(1);
-    BRepAdaptor_Surface correct_surface;
+    Standard_Real curvature = std::numeric_limits<Standard_Real>::max();
 
     for (TopExp_Explorer exp(main_shape, TopAbs_FACE); exp.More(); exp.Next()) {
         BRepAdaptor_Surface surface(TopoDS::Face(exp.Current()));
-        BRepClass_FaceClassifier classifier(TopoDS::Face(exp.Current()), point, surface.Tolerance());
+        BRepClass_FaceClassifier classifier(
+                TopoDS::Face(exp.Current()), point, surface.Tolerance());
 
         if (classifier.State() == TopAbs_IN || classifier.State() == TopAbs_ON) {
-            correct_surface = surface;
-            break;
+            ShapeAnalysis_Surface sas(surface.Surface().Surface());
+            gp_Pnt2d uv = sas.ValueOfUV(point, 0.0001);
+
+            BRepLProp_SLProps prop_calc(
+                    surface, uv.Y(), uv.X(), 2, surface.Tolerance());
+
+            curvature = std::min(curvature, prop_calc.MeanCurvature());
         }
     }
-
-    ShapeAnalysis_Surface sas(correct_surface.Surface().Surface());
-    gp_Pnt2d uv = sas.ValueOfUV(point, 0.0001);
-
-    BRepLProp_SLProps prop_calc(
-            correct_surface,
-            uv.Y(),
-            uv.X(),
-            2,
-            correct_surface.Tolerance());
-
-    return prop_calc.MeanCurvature();
+    return curvature;
 }
 
 Standard_Real GeometryModel::distance_to_boundary()
@@ -63,8 +58,8 @@ Standard_Real GeometryModel::distance_to_boundary()
 TopoDS_Edge GeometryModel::normal()
 {
     return BRepBuilderAPI_MakeEdge(
-                dist_calculator.PointOnShape1(1),
-                dist_calculator.PointOnShape2(1)
+            dist_calculator.PointOnShape1(1),
+            dist_calculator.PointOnShape2(1)
             ).Edge();
 }
 
