@@ -1,33 +1,34 @@
 #ifndef GEOMETRYMODEL_H
 #define GEOMETRYMODEL_H
 
-#include <vector>
-#include <vtkCell.h>
-#include <vtkGenericCell.h>
-#include <vtkIdList.h>
-#include <vtkKdTree.h>
-#include <vtkPolyData.h>
-#include <vtkSmartPointer.h>
-#include <vtkSTLReader.h>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <iostream>
+#include <Standard_TypeDef.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelSequence.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+
+enum FileType { IGES_FILE, STEP_FILE };
 
 class GeometryModel
 {
 public:
-    GeometryModel(vtkPolyData &pd, double resolution);
-    GeometryModel(const char *filename, double resolution);
+    GeometryModel(Handle(XCAFDoc_ShapeTool) file_info);
 
-    double distance_to_boundary(const double *centre) const;
-    bool is_boundary_within_radius(const double &radius, const double *centre) const;
-    bool is_boundary_within_radius(const double &radius, const double *centre, double *normal, double &distance)  const;
-
+    Standard_Boolean load_second_shape(const TopoDS_Shape &shape);
+    Standard_Boolean is_loaded();
+    Standard_Real distance_to_boundary();
+    TopoDS_Edge normal();
+    TDF_Label label_on_shape();
 private:
-    void insert_facet_centre(const double *x0, const double *x1, const double *x2, const double *n);
+    void load_first_shape();
 
-    // Geometry data.
-    vtkSmartPointer<vtkKdTree> locator;
-    vtkSmartPointer<vtkGenericCell> generic_cell;
-    vtkSmartPointer<vtkIdList> id_list;
-    std::vector<double> facet_centres;
-    double _resolution;
+    BRepExtrema_DistShapeShape dist_calculator;
+    Handle(XCAFDoc_ShapeTool) _file_info;
 };
 #endif
