@@ -18,6 +18,38 @@ Standard_Boolean GeometryModel::is_loaded()
     return dist_calculator.IsDone();
 }
 
+Standard_Real GeometryModel::curvature()
+{
+    TDF_Label main_shape_label =
+        _file_info->FindMainShape(dist_calculator.SupportOnShape1(1));
+
+    TopoDS_Shape main_shape = _file_info->GetShape(main_shape_label);
+    gp_Pnt point = dist_calculator.PointOnShape1(1);
+    BRepAdaptor_Surface correct_surface;
+
+    for (TopExp_Explorer exp(main_shape, TopAbs_FACE); exp.More(); exp.Next()) {
+        BRepAdaptor_Surface surface(TopoDS::Face(exp.Current()));
+        BRepClass_FaceClassifier classifier(TopoDS::Face(exp.Current()), point, surface.Tolerance());
+
+        if (classifier.State() == TopAbs_IN || classifier.State() == TopAbs_ON) {
+            correct_surface = surface;
+            break;
+        }
+    }
+
+    ShapeAnalysis_Surface sas(correct_surface.Surface().Surface());
+    gp_Pnt2d uv = sas.ValueOfUV(point, 0.0001);
+
+    BRepLProp_SLProps prop_calc(
+            correct_surface,
+            uv.Y(),
+            uv.X(),
+            2,
+            correct_surface.Tolerance());
+
+    return prop_calc.MeanCurvature();
+}
+
 Standard_Real GeometryModel::distance_to_boundary()
 {
     if (!is_loaded()) {

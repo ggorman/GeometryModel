@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 
     assert(geo_model.load_second_shape(test_1));
 
+    assert(geo_model.curvature() == -0.1);
     assert(geo_model.distance_to_boundary() == 10);
     assert(geo_model.label_on_shape().IsDescendant(sphere_label));
 
@@ -56,6 +57,9 @@ int main(int argc, char **argv)
 
     assert(geo_model.load_second_shape(test_2));
 
+    assert(geo_model.curvature() == 0);
     assert(geo_model.distance_to_boundary() == 30);
     assert(geo_model.label_on_shape().IsDescendant(box_label));
+
+    return 0;
 }
