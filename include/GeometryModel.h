@@ -15,6 +15,7 @@
 #include <gp_Pnt2d.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <Standard_TypeDef.hxx>
+#include <string>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -26,12 +27,15 @@
 #include <TopoDS_Shape.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
+#include "XDEReader.h"
+
 enum FileType { IGES_FILE, STEP_FILE };
 
 class GeometryModel
 {
 public:
     GeometryModel(Handle(XCAFDoc_ShapeTool) file_info);
+    GeometryModel(const std::string filename);
 
     Standard_Boolean load_second_shape(const TopoDS_Shape &shape);
     Standard_Boolean is_loaded();

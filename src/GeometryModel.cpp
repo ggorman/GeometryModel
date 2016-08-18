@@ -6,6 +6,25 @@ GeometryModel::GeometryModel(Handle(XCAFDoc_ShapeTool) file_info)
     load_first_shape();
 }
 
+GeometryModel::GeometryModel(const std::string filename)
+{
+    int dot = filename.find_last_of(".");
+
+    std::string extension = "";
+
+    for (int idx = dot + 1; idx < filename.length(); idx++) {
+        extension += filename[idx];
+    }
+
+    if (extension.compare("igs") == 0 || extension.compare("iges")) {
+        GeometryModel(readIGES(filename.c_str()));
+    } else if (extension.compare("stp") == 0 || extension.compare("step")) {
+        GeometryModel(readSTEP(filename.c_str()));
+    } else {
+        cerr << "Error! File format invalid" << endl;
+    }
+}
+
 Standard_Boolean GeometryModel::load_second_shape(const TopoDS_Shape &shape)
 {
     dist_calculator.LoadS2(shape);
