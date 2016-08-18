@@ -4,6 +4,7 @@
 #include <IGESCAFControl_Reader.hxx>
 #include <Standard_TypeDef.hxx>
 #include <STEPCAFControl_Reader.hxx>
+#include <Storage.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>

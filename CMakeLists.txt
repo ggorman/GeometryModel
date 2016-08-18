@@ -72,5 +72,12 @@ TARGET_LINK_LIBRARIES(test_GeometryModel ${GEOMETRYMODEL_LIBRARIES} geometrymode
 ADD_EXECUTABLE(test_CAD_Formats tests/test_CAD_Formats.cpp)
 TARGET_LINK_LIBRARIES(test_CAD_Formats ${GEOMETRYMODEL_LIBRARIES} geometrymodel)
 
+CONFIGURE_FILE(tests/torous_n_box.igs tests/torous_n_box.igs)
+CONFIGURE_FILE(tests/torous_n_box.stp tests/torous_n_box.stp)
+
+ADD_EXECUTABLE(test_XDEReader tests/test_XDEReader.cpp)
+TARGET_LINK_LIBRARIES(test_XDEReader ${GEOMETRYMODEL_LIBRARIES} geometrymodel)
+
 add_test(NAME unit_GeometryModel COMMAND ${PROJECT_BINARY_DIR}/tests/test_GeometryModel)
 add_test(NAME unit_CAD_Format COMMAND ${PROJECT_BINARY_DIR}/tests/test_CAD_Formats)
+add_test(NAME unit_XDEReader COMMAND ${PROJECT_BINARY_DIR}/tests/test_XDEReader)
