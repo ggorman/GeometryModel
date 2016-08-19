@@ -93,6 +93,20 @@ TDF_Label GeometryModel::label_on_shape()
     return label;
 }
 
+void GeometryModel::bounding_box(double *bbox)
+{
+    Bnd_Box box = bounding_box();
+    box.Get(bbox[0], bbox[2], bbox[4], bbox[1], bbox[3], bbox[5]);
+}
+
+Bnd_Box GeometryModel::bounding_box()
+{
+    Bnd_Box bbox;
+    BRepBndLib::Add(all_shapes, bbox);
+
+    return bbox;
+}
+
 void GeometryModel::load_first_shape()
 {
     TDF_LabelSequence top_shapes;
@@ -100,6 +114,7 @@ void GeometryModel::load_first_shape()
 
     if (top_shapes.Length() == 1) {
         dist_calculator.LoadS1(_file_info->GetShape(top_shapes.Value(1)));
+        all_shapes = _file_info->GetShape(top_shapes.Value(1));
     } else {
         TopoDS_Compound compound;
         BRep_Builder builder;
@@ -112,5 +127,6 @@ void GeometryModel::load_first_shape()
         }
 
         dist_calculator.LoadS1(compound);
+        all_shapes = compound;
     }
 }

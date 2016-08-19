@@ -1,7 +1,9 @@
 #ifndef GEOMETRYMODEL_H
 #define GEOMETRYMODEL_H
 
+#include <Bnd_Box.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepLProp_SLProps.hxx>
@@ -43,9 +45,12 @@ public:
     TopoDS_Edge normal();
     TDF_Label label_on_shape();
     Standard_Real curvature();
+    void bounding_box(double *bbox);
+    Bnd_Box bounding_box();
 private:
     void load_first_shape();
 
+    TopoDS_Shape all_shapes;
     BRepExtrema_DistShapeShape dist_calculator;
     Handle(XCAFDoc_ShapeTool) _file_info;
 };
