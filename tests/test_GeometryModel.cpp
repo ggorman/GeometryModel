@@ -1,6 +1,7 @@
 #include "GeometryModel.h"
 
 #include <cassert>
+#include <cmath>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -60,6 +61,14 @@ int main(int argc, char **argv)
     assert(geo_model.curvature() == 0);
     assert(geo_model.distance_to_boundary() == 30);
     assert(geo_model.label_on_shape().IsDescendant(box_label));
+
+    double bbox[6];
+    double target_bbox[6] = { -10, 10, -10, 10, -10, 50 };
+    geo_model.bounding_box(bbox);
+
+    for (int i = 0; i < 6; i++) {
+        assert(fabs(bbox[i]-target_bbox[i]) < 10e-6);
+    }
 
     return 0;
 }
