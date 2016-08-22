@@ -48,6 +48,7 @@ public:
     void bounding_box(double *bbox);
     Bnd_Box bounding_box();
 private:
+    void init(Handle(XCAFDoc_ShapeTool));
     void load_first_shape();
 
     TopoDS_Shape all_shapes;

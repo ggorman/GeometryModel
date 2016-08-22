@@ -2,8 +2,7 @@
 
 GeometryModel::GeometryModel(Handle(XCAFDoc_ShapeTool) file_info)
 {
-    _file_info = file_info;
-    load_first_shape();
+    init(file_info);
 }
 
 GeometryModel::GeometryModel(const std::string filename)
@@ -16,13 +15,21 @@ GeometryModel::GeometryModel(const std::string filename)
         extension += filename[idx];
     }
 
-    if (extension.compare("igs") == 0 || extension.compare("iges")) {
-        GeometryModel(readIGES(filename.c_str()));
-    } else if (extension.compare("stp") == 0 || extension.compare("step")) {
-        GeometryModel(readSTEP(filename.c_str()));
+    if (extension.compare("igs") == 0 || extension.compare("iges") == 0) {
+        Handle(XCAFDoc_ShapeTool) doc = readIGES(filename.c_str());
+        init(doc);
+    } else if (extension.compare("stp") == 0 || extension.compare("step") == 0) {
+        Handle(XCAFDoc_ShapeTool) doc = readSTEP(filename.c_str());
+        init(doc);
     } else {
         cerr << "Error! File format invalid" << endl;
     }
+}
+
+void GeometryModel::init(Handle(XCAFDoc_ShapeTool) file_info)
+{
+    _file_info = file_info;
+    load_first_shape();
 }
 
 Standard_Boolean GeometryModel::load_second_shape(const TopoDS_Shape &shape)
