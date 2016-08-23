@@ -114,6 +114,16 @@ Bnd_Box GeometryModel::bounding_box()
     return bbox;
 }
 
+void GeometryModel::displacement(double *d)
+{
+    gp_Pnt p1 = dist_calculator.PointOnShape1(1);
+    gp_Pnt p2 = dist_calculator.PointOnShape2(1);
+
+    d[0] = p2.X() - p1.X();
+    d[1] = p2.Y() - p1.Y();
+    d[2] = p2.Z() - p1.Z();
+}
+
 void GeometryModel::load_first_shape()
 {
     TDF_LabelSequence top_shapes;

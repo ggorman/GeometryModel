@@ -47,6 +47,7 @@ public:
     Standard_Real curvature();
     void bounding_box(double *bbox);
     Bnd_Box bounding_box();
+    void displacement(double *d);
 private:
     void init(Handle(XCAFDoc_ShapeTool));
     void load_first_shape();
