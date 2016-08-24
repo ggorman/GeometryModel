@@ -147,3 +147,14 @@ void GeometryModel::load_first_shape()
         all_shapes = compound;
     }
 }
+
+std::string GeometryModel::name_on_label(TDF_Label label)
+{
+    Handle(TDataStd_Name) name;
+
+    if (!label.FindAttribute(TDataStd_Name::GetID(), name)) {
+      return NULL;
+    }
+
+    return TCollection_AsciiString(name->Get()).ToCString();
+}

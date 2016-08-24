@@ -18,6 +18,8 @@
 #include <ShapeAnalysis_Surface.hxx>
 #include <Standard_TypeDef.hxx>
 #include <string>
+#include <TCollection_AsciiString.hxx>
+#include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -48,6 +50,7 @@ public:
     void bounding_box(double *bbox);
     Bnd_Box bounding_box();
     void displacement(double *d);
+    std::string name_on_label(TDF_Label label);
 private:
     void init(Handle(XCAFDoc_ShapeTool));
     void load_first_shape();
